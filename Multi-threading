@@ -1,0 +1,95 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class mul
+{
+    int turn=1;
+    synchronized void sev(int i)
+    {
+        while(turn!=1)
+        {
+            try 
+            {
+                wait();
+            } 
+            catch(Exception e) 
+            {
+                System.out.println("Interrupt Caught");
+            } 
+        }
+        System.out.println(7*i);
+        turn=0;
+        notify();
+    }
+    synchronized void eig(int i)
+    {
+        while(turn==1)
+        {
+            try 
+            {
+                wait();
+            } 
+            catch(Exception e) 
+            {
+                System.out.println("Interrupt Caught");
+            }
+        }
+        System.out.println(8*i);
+        turn=1;
+        notify();
+    }
+}
+
+class print8 implements Runnable
+{
+    int n=1;
+    mul m1=new mul();
+    Thread t8;
+    print8()
+    {
+        t8=new Thread(this,"Table of 8");
+        t8.start();
+    }
+    
+    public void run()
+    {
+        while(n<=2)
+        {
+            m1.eig(n++);
+        }
+    }
+}
+
+class print7 extends Thread
+{
+    int m=1;
+    mul m2=new mul();
+    Thread t7;
+    print7()
+    {
+        t7=new Thread("Table of 7");
+        t7.start();
+    }
+    
+    public void run()
+    {
+        while(m<=2)
+        {
+            m2.sev(m++);
+        }
+    }
+}
+
+class Main
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+	    print7 p1=new print7();
+	    print8 p2=new print8();
+	    Thread.sleep(10000);
+	   // p1.t7.join();
+	   // p2.t9.join();
+	    
+	}
+}
